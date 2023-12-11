@@ -60,7 +60,7 @@ func UpdateCondition(c *fiber.Ctx) error {
 		})
 	}
 
-	err = database.DB.Model(&model.Condition{}).Updates(condition).Error
+	err = database.DB.Model(&model.Condition{}).Where("id = ?", conditionId).Updates(&condition).Error
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

@@ -72,7 +72,7 @@ func UpdateAssetType(c *fiber.Ctx) error {
 		})
 	}
 
-	err = database.DB.Model(&model.AssetType{}).Updates(assetType).Error
+	err = database.DB.Model(&model.AssetType{}).Where("id = ?", assetType).Updates(&assetType).Error
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{

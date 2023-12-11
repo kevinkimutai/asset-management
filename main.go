@@ -3,6 +3,7 @@ package main
 import (
 	"asset-management/database"
 	router "asset-management/routes"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
@@ -29,11 +30,13 @@ func main() {
 	//API routes
 
 	app.Route("/api/v1/auth", router.AuthRouter)
-	app.Route("/api/v1/user", router.UserRouter)
+	app.Route("/api/v1/users", router.UserRouter)
 	app.Route("/api/v1/asset", router.AssetRouter)
 	app.Route("/api/v1/assetType", router.AssetTypeRouter)
 	app.Route("/api/v1/condition", router.ConditionRouter)
 
-	app.Listen(":8000")
+	PORT := os.Getenv("PORT")
+
+	app.Listen(":" + PORT)
 
 }

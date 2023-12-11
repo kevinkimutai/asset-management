@@ -11,7 +11,7 @@ func GetAllAssets(c *fiber.Ctx) error {
 	//TODO:HANDLE QUERIES
 	assets := new([]model.Asset)
 
-	err := database.DB.Preload("condition").Preload("assetType").Find(&assets).Error
+	err := database.DB.Preload("Condition").Preload("AssetType").Preload("User").Find(&assets).Error
 
 	if err != nil {
 		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -60,7 +60,7 @@ func UpdateAsset(c *fiber.Ctx) error {
 		})
 	}
 
-	err = database.DB.Model(&model.Asset{}).Updates(asset).Error
+	err = database.DB.Model(&model.Asset{}).Where("id = ?", assetId).Updates(&asset).Error
 
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
