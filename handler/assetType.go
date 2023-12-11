@@ -26,6 +26,7 @@ func CreateAssetType(c *fiber.Ctx) error {
 
 }
 func GetAllAssetTypes(c *fiber.Ctx) error {
+
 	assetTypes := new([]model.AssetType)
 
 	err := database.DB.Find(&assetTypes).Error

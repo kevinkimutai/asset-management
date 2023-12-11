@@ -3,6 +3,7 @@ package handler
 import (
 	"asset-management/database"
 	"asset-management/model"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -10,8 +11,36 @@ import (
 func GetAllAssets(c *fiber.Ctx) error {
 	//TODO:HANDLE QUERIES
 	assets := new([]model.Asset)
+	page := c.Query("page", "1")
+	pageSize := c.Query("pageSize", "20")
+	search := c.Query("search", "")
 
-	err := database.DB.Preload("Condition").Preload("AssetType").Preload("User").Find(&assets).Error
+	//convert page&&pageSize tO INt
+
+	pageInt, err := strconv.Atoi(page)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid page parameter",
+		})
+	}
+	pageSizeInt, err := strconv.Atoi(pageSize)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid pageSize parameter",
+		})
+	}
+
+	offset := (pageInt - 1) * pageSizeInt
+
+	query := database.DB.Offset(offset).Limit(pageSizeInt)
+
+	//SearchBy SetrialNumber
+	if search != "" {
+		query = query.Where("serial_number LIKE ?", "%"+search+"%")
+
+	}
+
+	err = query.Preload("Condition").Preload("AssetType").Preload("User").Find(&assets).Error
 
 	if err != nil {
 		c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
