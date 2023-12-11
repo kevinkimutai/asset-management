@@ -7,6 +7,9 @@ import (
 )
 
 func UserRouter(api fiber.Router) {
-	api.Get("/users", handler.Login)
-	api.Get("/user/:userId", handler.SignUp)
+	api.Get("/users", handler.Protected, handler.Restricted("superadmin", "admin"), handler.GetAllUsers)
+	api.Get("/user/:userId", handler.Protected, handler.Restricted("superadmin", "admin"), handler.GetUserById)
+	api.Patch("/user/:userId", handler.Protected, handler.Restricted("superadmin"), handler.UpdateUser)
+	api.Delete("/user/:userId", handler.Protected, handler.Restricted("superadmin"), handler.DeleteUser)
+
 }

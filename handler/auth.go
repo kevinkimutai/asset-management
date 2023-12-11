@@ -11,9 +11,8 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/log"
 	"github.com/golang-jwt/jwt"
-	"github.com/joho/godotenv"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -43,12 +42,6 @@ func createJWT(user *model.User) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	//Load dotenv
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
 	JWTSecretKey := os.Getenv("JWT_SECRET_KEY")
 
 	// Sign the token with the secret key
@@ -61,11 +54,6 @@ func createJWT(user *model.User) (string, error) {
 
 }
 func verifyJWT(tokenString string) (jwt.MapClaims, error) {
-
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
 
 	JWTSecretKey := os.Getenv("JWT_SECRET_KEY")
 
@@ -149,7 +137,6 @@ func Login(c *fiber.Ctx) error {
 func SignUp(c *fiber.Ctx) error {
 	user := new(model.User)
 
-	log.Info(c.BodyParser(user))
 	if err := c.BodyParser(user); err != nil {
 		return c.Status(fiber.StatusInternalServerError).SendString(err.Error())
 	}
