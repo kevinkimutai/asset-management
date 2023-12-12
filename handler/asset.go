@@ -9,11 +9,13 @@ import (
 )
 
 func GetAllAssets(c *fiber.Ctx) error {
-	//TODO:HANDLE QUERIES
+
 	assets := new([]model.Asset)
 	page := c.Query("page", "1")
 	pageSize := c.Query("pageSize", "20")
 	search := c.Query("search", "")
+	assetTypeId := c.Query("assetTypeId", "")
+	conditionId := c.Query("assetTypeId", "")
 
 	//convert page&&pageSize tO INt
 
@@ -37,6 +39,18 @@ func GetAllAssets(c *fiber.Ctx) error {
 	//SearchBy SetrialNumber
 	if search != "" {
 		query = query.Where("serial_number LIKE ?", "%"+search+"%")
+
+	}
+
+	//Filter By AssetType
+	if assetTypeId != "" {
+		query = query.Where("asset_type_id = ?", "%"+assetTypeId+"%")
+
+	}
+
+	//Filter By Condition
+	if conditionId != "" {
+		query = query.Where("condition_id = ?", "%"+conditionId+"%")
 
 	}
 
